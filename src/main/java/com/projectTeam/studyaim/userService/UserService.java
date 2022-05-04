@@ -75,6 +75,34 @@ public class UserService {
         return jsonObject;
     }
 
+    public boolean isAlreadySignUp(String username) {
+        return (userRepository.countByUserName(username) >= 1) ? true : false;
+    }
+
+    public UserDto modifyUserPassword(UserDto newUser) {
+        UserDto foundUser = userRepository.findByUserName(newUser.getUserName());
+
+        if (foundUser == null) {
+            // 기존에 없는 경우 새로 객체를 만들어서 저장하기.
+            System.out.println("유저없음");
+            // 비밀번호 암호화
+            newUser.setUserPassword(passwordEncoder.encode(newUser.getUserPassword()));
+
+            // 기본 활성화 상태
+            RoleDto role = RoleDto.builder()
+                    .roleId(1L)                 // 기본 권한 1번 == ROLE_USER
+                    .build();
+            newUser.setRoles(Collections.singleton(role));
+            return userRepository.save(newUser);
+        } else {
+            foundUser.setUserPassword(passwordEncoder.encode(newUser.getUserPassword()));
+            foundUser.setUserProfileImage(newUser.getUserProfileImage());
+            foundUser.setUserThumbnailImage(newUser.getUserThumbnailImage());
+
+            return userRepository.save(foundUser);
+        }
+    }
+
     // Called from UserApiController (GET /api/users )
     public List<UserDto> allUsers() {
         return userRepository.findAll();

@@ -68,12 +68,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery("select user_name, user_password, user_enabled "
-                        + "from user_dto "
+                        + "from userdto "
                         + "where user_name = ?")
                 .authoritiesByUsernameQuery("select u.user_name, r.role_name "
                         + "from user_role_dto ur "
-                        + "inner join user_dto u on ur.user_id = u.user_id "
-                        + "inner join role_dto r on ur.role_id = r.role_id "
+                        + "inner join userdto u on ur.user_id = u.user_id "
+                        + "inner join roledto r on ur.role_id = r.role_id "
                         + "where u.user_name = ?");
     }
 }
