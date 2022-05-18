@@ -4,6 +4,8 @@ package com.projectTeam.studyaim.userService;
 
 import com.projectTeam.studyaim.model.RoleDto;
 import com.projectTeam.studyaim.model.UserDto;
+import com.projectTeam.studyaim.repository.PostRepository;
+import com.projectTeam.studyaim.repository.ReplyRepository;
 import com.projectTeam.studyaim.repository.UserRepository;
 import com.projectTeam.studyaim.util.SecurityUtil;
 import org.json.simple.JSONObject;
@@ -19,9 +21,14 @@ import java.util.Optional;
 @Service
 public class UserService {
     @Autowired
+    private PostRepository postRepository;
+    @Autowired
+    private ReplyRepository replyRepository;
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder; // /configuration/WebSecurityConfig에서 Bean객체로 등록함.
+
 
     public UserService(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;

@@ -4,6 +4,7 @@ import com.projectTeam.studyaim.jwt.JwtAccessDeniedHandler;
 import com.projectTeam.studyaim.jwt.JwtAuthenticationEntryPoint;
 import com.projectTeam.studyaim.jwt.JwtSecurityConfig;
 import com.projectTeam.studyaim.jwt.TokenProvider;
+import com.projectTeam.studyaim.userService.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,61 +20,77 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
 
-@Configuration
+
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig{
     @Autowired
-    private DataSource dataSource; // 스프링 컨테이너에 의해 자동 주입되며 application.properties에 있는 객체들을 사용할 수 있도록 해주는 dataSource
-    private TokenProvider tokenProvider;
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
 
-        http
-                .cors().and().csrf().disable()                                                                               // 해커의 csrf(Cross-Site Request Forgery)공격에 대한 보안책을 disable(비활성)시킨다. (테스트 프로젝트 차원에서 disable 시키는 것이고, 실제 서비스에서 이것의 사용은 사이트가 취약해질 수 있는 요인이 된다.)
+    @Configuration
+    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+        @Autowired
+        private DataSource dataSource; // 스프링 컨테이너에 의해 자동 주입되며 application.properties에 있는 객체들을 사용할 수 있도록 해주는 dataSource
 
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+        private final TokenProvider tokenProvider;
+        private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+        private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
-                .and()
+        public ApiWebSecurityConfigurationAdapter(
+                TokenProvider tokenProvider,
+                JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                JwtAccessDeniedHandler jwtAccessDeniedHandler
+        ) {
+            this.tokenProvider = tokenProvider;
+            this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+            this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+        }
 
-                .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/api/users").permitAll()
-                .antMatchers("/socket").permitAll()
-                .antMatchers("/api/main/posts").permitAll()
-                .antMatchers("/api/main/voiceChatRoom").permitAll()
-                .antMatchers("/api/account/register").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/", "/css/**", "/js/**", "/img/**").permitAll() 	                            // "/"이나, "/home"같은 URI는 누구나 접근할 수 있다, 또한 css 접근 권한을 저렇게 명시해서 css디렉토리 하위에 대한 권한을 줄 수 있따.
-                .anyRequest().authenticated()			                                                                // 그 밖의 어느 요청이 무엇이든, 인증 절차(authenticated)를 걸쳐야 한다.
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .cors().and().csrf().disable()                                                                                // 해커의 csrf(Cross-Site Request Forgery)공격에 대한 보안책을 disable(비활성)시킨다. (테스트 프로젝트 차원에서 disable 시키는 것이고, 실제 서비스에서 이것의 사용은 사이트가 취약해질 수 있는 요인이 된다.)
 
-                .and()							                                                                        // and()를 만나면, authorizeRequests가 끝난 것임.
-                .apply(new JwtSecurityConfig(tokenProvider));
-    }
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery("select userName, userPassword, userEnabled "
-                        + "from userdto "
-                        + "where userName = ?")
-                .authoritiesByUsernameQuery("select u.userName, r.roleName "
-                        + "from user_role_dto ur "
-                        + "inner join userdto u on ur.user_id = u.userId "
-                        + "inner join roledto r on ur.role_id = r.roleId "
-                        + "where u.userName = ?");
+                    .exceptionHandling()
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                    .and()
+
+                    .authorizeRequests()
+
+                    .antMatchers("/socket").permitAll()
+                    .antMatchers("/api/main/posts").permitAll()
+                    .antMatchers("/api/main/voiceChatRoom").permitAll()
+                    .antMatchers("/api/account/register").permitAll()
+                    .antMatchers("/api/auth/**").permitAll()
+                    .antMatchers("/", "/css/**", "/js/**", "/img/**").permitAll()                                // "/"이나, "/home"같은 URI는 누구나 접근할 수 있다, 또한 css 접근 권한을 저렇게 명시해서 css디렉토리 하위에 대한 권한을 줄 수 있따.
+                    .anyRequest().authenticated()                                                                            // 그 밖의 어느 요청이 무엇이든, 인증 절차(authenticated)를 걸쳐야 한다.
+
+                    .and()                                                                                                    // and()를 만나면, authorizeRequests가 끝난 것임.
+                    .apply(new JwtSecurityConfig(tokenProvider));
+        }
+
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+            auth
+                    .jdbcAuthentication()
+                    .dataSource(dataSource)
+                    .usersByUsernameQuery("select userName, userPassword, userEnabled "
+                            + "from userdto "
+                            + "where userName = ?")
+                    .authoritiesByUsernameQuery("select u.userName, r.roleName "
+                            + "from user_role_dto ur "
+                            + "inner join userdto u on ur.user_id = u.userId "
+                            + "inner join roledto r on ur.role_id = r.roleId "
+                            + "where u.userName = ?");
+        }
     }
 }
