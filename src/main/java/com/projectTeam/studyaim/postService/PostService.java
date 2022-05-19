@@ -68,10 +68,10 @@ public class PostService {
         // 열거형의 postType 경우 if-else문으로 해결한다.
         if (((String) requestBody.get("postType")).equals("JOB")) {
             newPost.setPostType(PostCategory.JOB);
-        } else if (((String) requestBody.get("postType")).equals("COMPANYLIFE")) {
-            newPost.setPostType(PostCategory.COMPANYLIFE);
-        } else if (((String) requestBody.get("postType")).equals("FAMILY")) {
-            newPost.setPostType(PostCategory.FAMILY);
+        } else if (((String) requestBody.get("postType")).equals("ENGLISH")) {
+            newPost.setPostType(PostCategory.ENGLISH);
+        } else if (((String) requestBody.get("postType")).equals("LICENSE")) {
+            newPost.setPostType(PostCategory.LICENSE);
         } else {
             // Nothing
         }
