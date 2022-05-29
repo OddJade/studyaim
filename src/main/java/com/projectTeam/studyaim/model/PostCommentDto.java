@@ -18,7 +18,7 @@ public class PostCommentDto {
     private String postCommentContent;
 
     @ManyToOne
-    @JoinColumn(name="postId")                     // postDto 테이블의 post_id 컬럼값을 JOIN에 이용한다.
+    @JoinColumn(name="postId")                     // postDto 테이블의 postId 컬럼값을 JOIN에 이용한다.
     @JsonIgnore
     private PostDto postDto;
 
