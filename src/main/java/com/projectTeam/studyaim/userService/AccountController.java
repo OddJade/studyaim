@@ -15,6 +15,9 @@ public class AccountController {
 
     @PutMapping("/register")
     public void replacePost(@RequestBody UserDto newUser) {
+        if(userService.isAlreadySignUp(newUser.getUserName())){
+            throw new RuntimeException("already exist user");
+        }
         userService.modifyUserPassword(newUser);
     }
 

@@ -25,6 +25,11 @@ public class MyPageApiController {
         return userService.replaceUser(newUser, userId);
     }
 
+    @PutMapping("/users/modify")
+    public void replacePost(@RequestBody UserDto newUser) {
+        userService.modifyUserPassword(newUser);
+    }
+
     // 마이페이지 체크 박스에 따른 게시글 / 댓글 삭제
     @PostMapping("/users/mypage")
     void deleteMyPosts(@RequestBody JSONObject items,
