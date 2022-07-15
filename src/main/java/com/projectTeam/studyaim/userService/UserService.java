@@ -97,6 +97,7 @@ public class UserService {
             System.out.println("유저없음");
             // 비밀번호 암호화
             newUser.setUserPassword(passwordEncoder.encode(newUser.getUserPassword()));
+            newUser.setUserEnabled(true);
 
             // 기본 활성화 상태
             RoleDto role = RoleDto.builder()
