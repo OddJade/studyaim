@@ -47,7 +47,7 @@ public class WebSecurityConfig {
         @Autowired
         public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
             auth.inMemoryAuthentication()
-                    .withUser("OPENVIDUAPP").password(passwordEncoder().encode("therapist"))
+                    .withUser("OPENVIDUAPP").password(passwordEncoder().encode("MY_SECRET"))
                     .roles("OPENVIDU");
         }
 
