@@ -1,0 +1,22 @@
+.container {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.mypage{
+    display:flex;
+    align-items:center;
+    margin-right:20px;
+}
+
+.mypage img{
+    width : 40px;
+    margin-right: 20px;
+}
+
+.container img{
+    max-height: 80px;
+    max-width: 80px;
+}
+

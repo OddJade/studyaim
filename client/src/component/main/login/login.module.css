@@ -1,0 +1,10 @@
+.container{
+    width:100%;
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
+}
+
+.kakaoImg{
+    margin-top: 20px;
+}

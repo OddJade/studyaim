@@ -1,0 +1,53 @@
+.App {
+    width:100%;
+    height:100%;
+    text-align: center;
+  }
+  
+  .movie_container {
+    margin: 0 auto;
+    width: 80%;
+    border: 1px solid #333;
+    padding: 10px 0 30px 0;
+    border-radius: 5px;
+    margin-bottom : 50px;
+  }
+  
+  .form_wrapper{
+    width: 80%;
+    margin: 0 auto;
+  }
+  
+  .title_input {
+    width: 500px;
+    height: 40px;
+    margin: 10px;
+  }
+  
+  .reply {
+    width: 10%;
+    height: 2em;
+    resize:none;
+  }
+  .reply_content {
+    width: 50%;
+    height: 2em;
+    resize:none;
+  }
+
+  .text_area {
+    width: 80%;
+    min-height: 500px;
+  }
+
+  .submit_button {
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+    padding: 20px;
+    border: none;
+    background: indianred;
+    margin-right:15px;
+    margin-right:15px;
+    border-radius: 5px;
+  }

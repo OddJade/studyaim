@@ -1,0 +1,32 @@
+.container{
+    display:flex;
+
+}
+
+.side button{
+    width:100%;
+    margin-top : px;
+    font-size :large;
+    font-weight: bold;
+    margin-bottom: 10px;
+    background-color: #FDDF79;
+    border-color:#FDDF79;
+    height: 8rem;
+}
+
+.body {
+    width:60%;
+    display:flex;
+    align-items: center; 
+    justify-content: center;
+}
+
+.home {
+    width:60%;
+}
+
+.side{
+    width: 20%;
+    height: 100vh;
+}
+

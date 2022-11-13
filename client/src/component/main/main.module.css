@@ -1,0 +1,8 @@
+.container{
+    display:flex;
+}
+
+.side{
+    width: 10%;
+    background-color: #C0C0C0;
+}
